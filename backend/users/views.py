@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .serializers import UserRegisterSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer
+from .models import UserProfile
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -32,3 +33,12 @@ class Logoutview(APIView):
         except Exception as e:
             return Response({"error":str(e)})
 
+class UserProfileview(generics.RetrieveUpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def get_object(self):
+
+        return UserProfile.objects.get(user=self.request.user)
